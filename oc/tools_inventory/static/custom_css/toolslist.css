@@ -1,0 +1,68 @@
+/* badges -------------------------------------*/
+.threatcon-6 {
+  /* green */
+  background-color: #468847 !important;
+}
+
+.threatcon-5 {
+  /* yellow */
+  background-color: #fefe00 !important;
+  color: black !important;
+}
+
+.threatcon-4 {
+  /* orange */
+  background-color: #f89406 !important;
+}
+
+.threatcon-3 {
+  /* red */
+  background-color: #f39e00 !important;
+}
+
+.threatcon-2 {
+  /* red */
+  background-color: #f81920 !important;
+}
+
+.threatcon-1 {
+  /* red */
+  background-color: #f81920 !important;
+}
+
+.label,
+.badge {
+  color: whitesmoke;
+  font-size: 11.84px;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  width: 18px;
+}
+
+.bg-isIncident {
+  background-color: coral;
+}
+
+.bg-notIncident {
+  background-color: greenyellow;
+}
+
+.nav-totalrec {
+  text-align: center;
+  font-size: 9pt;
+  font-weight: bold;
+  color: whitesmoke;
+  border: 1px solid green;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  width: 20px;
+}
+
+#containermap {
+  min-width: 320px;
+  max-width: 800px;
+  margin: 0 auto;
+  height: 980px;
+}

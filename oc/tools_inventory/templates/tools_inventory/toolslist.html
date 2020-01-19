@@ -1,0 +1,266 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <h3>รายการเครื่องมือ</h3><br>
+    <div class="row">
+    <div class="col-md-3 ">
+        <h5>เพิ่มเครื่องมือ</h5>
+        <form id="addTool" action="">
+          <div class="form-group">
+            <input class="form-control" type="text" name="toolname" placeholder="ชื่อเครื่องมือ" required>
+          </div>
+          <div class="form-group">
+            <textarea class="form-control" type="text" name="tooldesc" placeholder="รายละเอียด" required></textarea>
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" name="devby" placeholder="พัฒนาโดย" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" name="useby" placeholder="ผู้ใช้" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" name="location" placeholder="ตำแหน่งที่อยู่ของเครื่องมือ">
+          </div>
+          <div class="form-group">
+            <input class="form-control" type="text" name="url" placeholder="URL">
+          </div>
+          
+                <button class="btn btn-primary form-control" type="submit">เพิ่ม</button>
+        </form>
+    </div>
+    <div class="col-md-9">
+        <h3>รายการ</h3>
+        <table id="toolsTable" class="table table-striped">
+            <tr>
+                <th>ชื่อ</th>
+                <th colspan=4>รายละเอียด</th>
+            </tr>
+            
+            {% if tools %}
+                
+                {% for tool in tools %}
+                <tr id="tool-{{tool.id}}">
+                    <td class="tool_name toolData" name="tool_name">{{tool.tool_name}}</td>
+                    <td class="tool_description toolData" name="tool_description">{{tool.tool_description}}</td>
+                    <td style="display:none;" class="dev_by toolData" name="dev_by">{{tool.dev_by}}</td>
+                    <td style="display:none;" class="used_by toolData" name="used_by">{{tool.used_by}}</td>
+                    <td style="display:none;" class="location toolData" name="location">{{tool.location}}</td>
+                    <td style="display:none;" class="url toolData" name="url">{{tool.url}}</td>
+                    
+                    
+                    <td align="center">
+                        <button class="btn btn-success form-control" onClick="editTool({{tool.id}})" data-toggle="modal" data-target="#myModal")">แก้ไข</button>
+                    </td>
+                    <td align="center">
+                        <button class="btn btn-danger form-control" onClick="deleteTool({{tool.id}})">ลบ</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                    No Tool
+          {% endif %}
+        </table>
+    </div>   
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="myModalLabel">แก้ไขเครื่องมือ
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+          
+        </div>
+        <form id="updateTool" action="">
+            <div class="modal-body">
+                <input class="form-control" id="form-id" type="hidden" name="formId"/>
+                <label for="name">ชื่อเครื่องมือ</label>
+                <input class="form-control" id="form-tool_name" type="text" name="formToolName"/>
+                <label for="description">รายละเอียด</label>
+                <textarea class="form-control" id="form-tool_description" type="text" name="formToolDescription"></textarea>
+                <label for="dev">พัฒนาโดย</label>
+                <input class="form-control" id="form-dev_by" type="text" name="formDevBy"/>
+                <label for="use">ผู้ใช้</label>
+                <input class="form-control" id="form-used_by" type="text" name="formUsedBy"/>
+                <label for="locate">ตำแหน่งที่อยู่ของเครื่องมือ</label>
+                <input class="form-control" id="form-location" type="text" name="formLocation"/>
+                <label for="url">URL</label>
+                <input class="form-control" id="form-url" type="text" name="formUrl"/>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" >ตกลง</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">ปิด</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content%}
+
+{% block javascript %}
+<script>
+    // Create Django Ajax Callxx
+$("form#addTool").submit(function() {
+    
+    var toolnameInput = $('input[name="toolname"]').val().trim();
+    var tooldescInput = $('textarea[name="tooldesc"]').val().trim();
+    var devbyInput = $('input[name="devby"]').val().trim();
+    var usebyInput = $('input[name="useby"]').val().trim();
+    var locationInput = $('input[name="location"]').val().trim();
+    var urlInput = $('input[name="url"]').val().trim();
+    
+    
+    if (toolnameInput && tooldescInput && devbyInput && usebyInput) {
+        console.log(toolnameInput,tooldescInput)        
+        
+        // Create Ajax Call
+        $.ajax({
+            type:'GET',            
+            url: '{% url "tool_create" %}',
+            data: {
+                'toolname': toolnameInput,
+                'tooldesc': tooldescInput,
+                'devby': devbyInput,
+                'useby': usebyInput,
+                'location': locationInput,
+                'url': urlInput
+            },
+            dataType: 'json',
+            success: function (data) {
+                
+                if (data.tool) {
+                    appendToToolsTable(data.tool);
+                    console.log(data.tool);
+                }
+            }
+        });
+    } else {
+        alert("All fields must have a valid value.");
+    }
+    $("form#addTool").trigger("reset");
+    return false;
+});
+
+$("form#updateTool").submit(function() {
+    
+    var idInput = $('input[name="formId"]').val().trim();
+    var toolnameInput = $('input[name="formToolName"]').val().trim();
+    var tooldescInput = $('textarea[name="formToolDescription"]').val().trim();
+    var devbyInput = $('input[name="formDevBy"]').val().trim();
+    var usebyInput = $('input[name="formUsedBy"]').val().trim();
+    var locationInput = $('input[name="formLocation"]').val().trim();
+    var urlInput = $('input[name="formUrl"]').val().trim();
+    
+    if (toolnameInput && tooldescInput && devbyInput && usebyInput) {
+        // Create Ajax Call
+        $.ajax({
+            type:'GET',
+            url: '{% url "tool_update" %}',
+            data: {
+                'id': idInput,
+                'toolname': toolnameInput,
+                'tooldesc': tooldescInput,
+                'devby': devbyInput,
+                'useby': usebyInput,
+                'location': locationInput,
+                'url': urlInput
+                
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.tool) {
+                    console.log(data.tool);
+                    updateToToolTable(data.tool);
+                }
+            }
+        });
+    } else {
+        alert("All fields must have a valid value.");
+    }
+    $('form#updateTool').trigger("reset");
+    $('#myModal').modal('hide');
+    return false;
+});
+
+function editTool(id) {
+  if (id) {
+    tr_id = "#tool-" + id;
+    // appname = $(tr_id).find(".tool_name").text();
+    // taskscan = $(tr_id).find(".taskScan").text();
+    
+    $('#form-id').val(id);
+    $('#form-tool_name').val($(tr_id).find(".tool_name").text());
+    $('#form-tool_description').val($(tr_id).find(".tool_description").text());
+    $('#form-dev_by').val($(tr_id).find(".dev_by").text());
+    $('#form-used_by').val($(tr_id).find(".used_by").text());
+    $('#form-location').val($(tr_id).find(".location").text());
+    $('#form-url').val($(tr_id).find(".url").text());
+    // $('#form-task').val(taskscan);
+    
+  }
+}
+
+// Delete Django Ajax Call
+function deleteTool(id) {
+  var action = confirm("Are you sure you want to delete this task?");
+  if (action != false) {
+    $.ajax({
+        url: '{% url "tool_delete" %}',
+        data: {
+            'id': id,
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.deleted) {
+              $("#toolsTable #tool-" + id).remove();
+            }
+        }
+    });
+  }
+}
+
+
+function appendToToolsTable(tool) {
+  $("#toolsTable > tbody:last-child").append(`
+        <tr id="tool-${tool.id}">
+            <td class="tool_name" name="tool_name">${tool.tool_name}</td>
+            '<td class="tool_description" name="tool_description">${tool.tool_description}</td>            
+            '<td align="center">
+                <button class="btn btn-success form-control" onClick="editTool(${tool.id})" data-toggle="modal" data-target="#myModal")">แก้ไข</button>
+            </td>
+            <td align="center">
+                <button class="btn btn-danger form-control" onClick="deleteTool(${tool.id})">ลบ</button>
+            </td>
+        </tr>
+    `);
+}
+
+function updateToToolTable(tool){
+    
+    $("#toolsTable #tool-" + tool.id).children(".toolData").each(function() {
+        var attr = $(this).attr("name");
+        
+        if (attr == "tool_name") {
+          $(this).text(tool.tool_name);
+        } else if (attr == "tool_description") {
+          $(this).text(tool.tool_description);
+        }else if (attr == "dev_by") {
+          $(this).text(tool.dev_by);
+        }else if (attr == "used_by") {
+          $(this).text(tool.used_by);
+        }else if (attr == "location") {
+          $(this).text(tool.location);
+        }else if (attr == "url") {
+          $(this).text(tool.url);
+        }else{
+            //$(this).text(task.taskscan);
+        }
+      });
+}
+
+</script>
+{% endblock javascript %}

@@ -1,0 +1,104 @@
+{% extends "main/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block customcss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'custom_css/toolslist.css' %}">
+{% endblock customcss%}
+<!--  -->
+{% block content %}
+{% load i18n %}
+<div class="container">
+    
+    <main role="main" class="container">
+        <form method="GET" action=".">
+            <div class="form-group col-md-2">
+                <label for="response">Responsibilities</label>
+                <select id="response" class="form-control" name="response">
+                  <option value="" >Choose...</option>
+                  {% for res in ress %}
+                    <option value="{{ res.user }}">{{ res.team }}</option>
+                  {% endfor %}
+                </select>
+                <br>
+                <button type="submit" class="btn btn-primary">ค้นหา</button>
+              </div>
+              
+        </form>
+    </main>
+    
+    {% if tools %}
+      <table width='100%'>
+        <tr>
+          <td colspan=7 align='right'>
+            <a href="{% url 'listtool_download' %}" >csv</a>
+          </td>
+        </tr>  
+      </table>      
+        <table class='table table-hover table-condensed'>
+          
+			<thead>
+                    {% trans "Responsibilities Team" as t_res %}
+                    {% trans "Tool Name" as t_name %}
+                    {% trans "Description" as t_desc %}
+                    {% trans "Dev by" as t_dev %}                
+                    {% trans "Used by" as t_used %}
+                    {% trans "Location" as t_location %}
+                    {% trans "URL" as t_url %}
+                                      
+                    <tr>
+                        {% include './column.html' with name=t_res field='res' %}
+                        {% include './column.html' with name=t_name field='name' %}
+                        {% include './column.html' with name=t_desc field='desc' %}
+                        {% include './column.html' with name=t_dev field='dev' %}
+                        {% include './column.html' with name=t_used field='used' %}
+                        {% include './column.html' with name=t_location field='location' %}
+                        {% include './column.html' with name=t_url field='url' %}
+                        
+                    </tr>
+            </thead>
+            <body style='font-size: 8pt;'>
+            {% for tool in tools %}
+                <tr>
+                    <td>{{ tool.created_by.profile.get_team_display }}</td>
+                    <td>{{ tool.tool_name }}</td>
+                    <td>{{ tool.tool_description }}</td>
+                    <td>{{ tool.dev_by }}</td>
+                    <td>{{ tool.used_by }}</td>
+                    <td>{{ tool.location }}</td>
+                    <td>{{ tool.url }}</td>
+                </tr>
+            {% endfor %}
+            </body>
+            
+        </table>
+      </table>>
+        {% if is_paginated %}
+
+        {% if page_obj.has_previous %}
+          <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+          <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+  
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+          {% endif %}
+        {% endfor %}
+  
+        {% if page_obj.has_next %}
+          <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+          <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+  
+      {% endif %} 
+    </div>
+    {% else %}
+	<div class='nothing_to_show'>{% trans "No tools to show." %}</div>   
+    {% endif %}
+    
+{% endblock content %}
+{% block javascript %}
+
+{% endblock javascript %}
