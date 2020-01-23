@@ -210,3 +210,11 @@ def toollist_map(request):
     }
     context['map']=map_dicts
     return render(request, 'tools_inventory/toolsmap.html', context)
+
+def toollist_plan(request):
+    context = {
+        'title': 'แผนงานรวบรวม Tools List',
+        
+    }
+    return render(request,'tools_inventory/toolslistplan.html',context)
+

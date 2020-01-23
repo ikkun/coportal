@@ -1,0 +1,77 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block customcss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'custom_css/toolslist.css' %}">
+{% endblock customcss%}
+{% block content %}
+{% load i18n %}
+    <div id="containerplan"></div>
+{% endblock content %}
+{% block javascript %}
+<script src="https://code.highcharts.com/gantt/highcharts-gantt.js"></script>
+
+<script>
+Highcharts.ganttChart('containerplan', {
+    title: {
+        text: 'แผนงานรวบรวมปรับปรุง In-house Tools Architect ของ O&C'
+    },
+    credits: {
+        enabled: false
+    },
+    xAxis: {
+        min: Date.UTC(2019, 12, 14),
+        max: Date.UTC(2020, 02, 28)
+    },
+
+    series: [{
+        name: 'แผนงานรวบรวมปรับปรุง In-house Tools Achitect ของ O&C',
+        data: [{
+            name: 'รวบรวมข้อมูล In-house tools',
+            start: Date.UTC(2019,12,14),
+            end: Date.UTC(2019,12,24),
+            completed: 1
+        }, {
+            name: 'ช่วยสนับสนุนย้าย Tools ไป Web Hosting ของ O&C',
+            id:'movetool',
+            start: Date.UTC(2020,01,03),
+            end: Date.UTC(2020,01,28)
+        }, {
+            name: 'PS - OS',
+            parent: 'movetool',
+            start: Date.UTC(2020, 01, 03),
+            end: Date.UTC(2020, 01, 14),
+            completed:0.1
+        }, {
+            name: 'PS - SA',
+            parent: 'movetool',
+            start: Date.UTC(2020, 01, 03),
+            end: Date.UTC(2020, 01, 14),
+            completed:0.0
+        }, {
+            name: 'PS - DM',
+            parent: 'movetool',
+            start: Date.UTC(2020, 01, 03),
+            end: Date.UTC(2020, 01, 14),
+            completed:0.0
+        }, {
+            name: 'CO - OPT1',
+            parent: 'movetool',
+            start: Date.UTC(2020, 01, 03),
+            end: Date.UTC(2020, 01, 21),
+            completed:0.0
+        }, {
+            name: 'CO - OPT2',
+            parent: 'movetool',
+            start: Date.UTC(2020, 01, 03),
+            end: Date.UTC(2020,01, 21),
+            completed:0.0
+        },{
+            name: 'จดทะเบียนโดเมน Website Hosting ของ O&C',
+            start: Date.UTC(2020,01,25),
+            end: Date.UTC(2020,01,28),
+            completed: 0
+        }]
+    }]
+});
+</script>
+{% endblock javascript %}

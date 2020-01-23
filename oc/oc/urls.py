@@ -32,6 +32,7 @@ urlpatterns = [
     #tools list
     path('toolslist/',tools_inventory_views.ToolsListView.as_view(),name='toolslist'),
     path('toolslist/map/',tools_inventory_views.toollist_map,name='toolsmap'),
+    path('toolslist/plan/',tools_inventory_views.toollist_plan,name='toolsplan'),
     path('toolcreate/create/',tools_inventory_views.CreateTool.as_view(), name='tool_create'),
     path('toolcreate/update/',tools_inventory_views.UpdateTool.as_view(), name='tool_update'),
     path('toolcreate/delete/',tools_inventory_views.DeleteTool.as_view(), name='tool_delete'),

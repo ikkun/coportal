@@ -66,3 +66,8 @@
   margin: 0 auto;
   height: 980px;
 }
+
+#containerplan {
+  max-width: 800px;
+  margin: 1em auto;
+}
